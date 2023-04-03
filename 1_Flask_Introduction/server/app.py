@@ -1,16 +1,16 @@
 # Setting up imports
 from flask import Flask, jsonify, make_response, request
 from flask_migrate import Migrate
-from models import db
+from models import db, NewClass
 
 # Setting up the app
-# app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# migrate = Migrate(app,db)
-# db.init_app()
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+migrate = Migrate(app,db)
+db.init_app(app)
 
-# Now lets run int the terminal
+# Now lets run int the terminal (Make sure to enter the server folder)
     # export FLASK_APP=app.py
     # export FLASK_RUN_PORT=5555
     # flask db init
@@ -30,7 +30,13 @@ from models import db
         #     return f'<h1>{title}</h1>'
     # Lets use the class.query.filter() in order to filter like we were using
     # sqlAlchemy
-    
+@app.route('/')
+def first():
+    return '<h1>Hello World</h1>'
+
+@app.route('/image')
+def image():
+    return '<img src=https://images.unsplash.com/photo-1520315342629-6ea920342047?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80 />'
 
 # Request Hooks
     # @app.before_request: runs a function before each request.
@@ -41,5 +47,5 @@ from models import db
 
 
 # Lets set up out main so we don't have to use flask run
-# if __name__ == '__main__':
-#     app.run(port=5555, debug=True)
+if __name__ == '__main__':
+    app.run(port=5555, debug=True)
