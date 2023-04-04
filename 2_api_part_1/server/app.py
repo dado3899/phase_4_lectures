@@ -7,19 +7,16 @@
         # flask db upgrade 
         # python seed.py
 
-# Restful
-
 # | HTTP Verb 	|       Path       	| Description        	|
 # |-----------	|:----------------:	|--------------------	|
-# | GET       	|   /productions   	| READ all resources 	|
-# | GET       	| /productions/:id 	| READ one resource   	|
-# | POST      	|   /productions   	| CREATE one resource 	|
-# | PATCH/PUT 	| /productions/:id 	| UPDATE one resource	|
-# | DELETE    	| /productions/:id 	| DESTROY one resource 	|
+# | GET       	|   /model       	| READ all resources 	|
+# | GET       	| /model/:id    	| READ one resource   	|
+# | POST      	|   /model      	| CREATE one resource 	|
+# | PATCH/PUT 	| /model/:id    	| UPDATE one resource	|
+# | DELETE    	| /model/:id    	| DESTROY one resource 	|
 
 from flask import Flask, request, make_response, jsonify
 from flask_migrate import Migrate
-
 
 from model import db
 
@@ -32,8 +29,18 @@ app.json.compact = False
 migrate = Migrate(app, db)
 db.init_app(app)
 
-# Initialize the Api
-api = Api(app)
+# Now thinking of paths we can add
+# methods=['GET','POST'] to our @app.route('/anything')
+# We can then check that request.method == 'GET' or 'POST' and do something accordingly
+# For post we can go ahead and use request.form.get("field")
+# EX newcar = Car(make = request.form.get("make"), model=request.form.get("model"))
+# We would need to make sure our request has make and model! 
+# response = make_response(newcar.to_dict(),201) as an example response
+# 201 means a successful post!
+
+# For patch we can use this:
+# for attr in request.form:
+#     setattr(queried_data, attr, request.form.get(attr))
 
 # if __name__ == '__main__':
 #     app.run(port=5555, debug=True)

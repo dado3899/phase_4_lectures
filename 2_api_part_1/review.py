@@ -21,3 +21,5 @@
 # 300's - redirect
 # 400's - client error
 # 500's - server error
+
+# Up next, using postman
