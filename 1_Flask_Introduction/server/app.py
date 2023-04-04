@@ -32,9 +32,18 @@ def image():
 def model_display(make,model):
     new_model = Vehicle.query.filter(db.func.lower(Vehicle.model) == db.func.lower(model), db.func.lower(Vehicle.make) == db.func.lower(make)).first()
     if new_model:
-        return f'Hello {g.user} <h1>Model: {new_model.model}, Make: {new_model.make}</h1>'
+        jsonobj = {
+            "Model": new_model.model,
+            "Make": new_model.make
+        }
+        res = make_response(jsonify(jsonobj),200)
+        return res
     else:
-        return f'Not a car'
+        jsonobj = {
+            "Exist": False
+        }
+        res = make_response(jsonify(jsonobj),500)
+        return res
 # Routes
     # We can set up routes with @app.route('/')
     # Now lets set up a route that goes to the following image
