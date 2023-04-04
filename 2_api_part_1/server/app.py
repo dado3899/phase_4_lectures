@@ -17,7 +17,7 @@
 
 from flask import Flask, request, make_response, jsonify
 from flask_migrate import Migrate
-
+import json
 from model import db, Vehicle, Person
 
 app = Flask(__name__)
@@ -104,7 +104,10 @@ def get_one_vehicle(id):
             return res
         elif request.method == 'PATCH':
             for attr in request.form:
-               setattr(id_vehicle, attr, request.form.get(attr))
+                if attr == 'registered':
+                    setattr(id_vehicle, attr, bool(int(request.form.get(attr))))
+                else:
+                    setattr(id_vehicle, attr, request.form.get(attr))
             db.session.add(id_vehicle)
             db.session.commit()
             res = make_response(jsonify(id_vehicle.to_dict()),200)
