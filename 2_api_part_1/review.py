@@ -8,7 +8,6 @@
 # metadata = MetaData(naming_convention={
 #     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
 # })
-
 # metadata = MetaData(naming_convention={
 #         "ix": "ix_%(column_0_label)s",
 #         "uq": "uq_%(table_name)s_%(column_0_name)s",
@@ -16,7 +15,6 @@
 #         "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
 #         "pk": "pk_%(table_name)s"
 #       })
-
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/#using-custom-metadata-and-naming-conventions
 # https://alembic.sqlalchemy.org/en/latest/naming.html#the-importance-of-naming-constraints
 
