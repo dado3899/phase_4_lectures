@@ -85,7 +85,7 @@ def get_one_people(id):
                 "valid": True,
                 "Reason": "Deleted"
             }
-            res = make_response(return_obj,500)
+            res = make_response(return_obj,200)
             return res
     else:
         return_obj = {

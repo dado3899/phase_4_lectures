@@ -25,10 +25,10 @@ db = SQLAlchemy(metadata=metadata)
 # many = relationship('many_class', backref='one_tablename')
 # one_id = Column(Integer, ForeignKey('one_tablename.id'))
 
-# many1 = relationship('Join_class', backref='many2')
+# join = relationship('Join_class', backref='many2')
 # many1_id = Column(Integer, ForeignKey('many1_tablename.id'))
 # many1_id = Column(Integer, ForeignKey('many2_tablename.id'))
-# many2 = relationship('Join_class', backref='many1')
+# join = relationship('Join_class', backref='many1')
 class Person(db.Model,SerializerMixin):
     __tablename__ = 'persons'
     id = db.Column(db.Integer, primary_key=True)
