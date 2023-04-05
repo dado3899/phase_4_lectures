@@ -7,7 +7,7 @@
 from flask import Flask, request, make_response, jsonify
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
-from models import db, Student,Teacher,Schedule
+from models import db,Student,Teacher,Schedule
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -67,7 +67,7 @@ class One_Student(Resource):
         db.session.commit()
         res = make_response(jsonify(one_student.to_dict()),200)
         return res
-        
+
     def delete(self,id):
         one_student = Student.query.filter(Student.id == id).first()
         db.session.delete(one_student)
