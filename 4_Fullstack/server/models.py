@@ -1,9 +1,3 @@
-# There are many ways we can add constraints!
-# db.CheckConstraint
-# nullable = False
-# unique = True
-# @validates('')
-
 # imports
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import validates
@@ -19,58 +13,61 @@ metadata = MetaData(naming_convention={
     })
 
 db = SQLAlchemy(metadata=metadata)
-# Lets do a many to many!
-# Join_class = relationship('Join_class', backref='many2')
-# many1_id = Column(Integer, ForeignKey('many1_tablename.id'))
-# many1_id = Column(Integer, ForeignKey('many2_tablename.id'))
-# Join_class = relationship('Join_class', backref='many1')
 
-class Teacher(db.Model,SerializerMixin):
-    __tablename__ = 'teachers'
+class Customer(db.Model,SerializerMixin):
+    __tablename__ = 'customers'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable = False)
-    email = db.Column(db.String)
-    emergency_email = db.Column(db.String)
+    address = db.Column(db.String, unique=True)
+    email = db.Column(db.String, nullable = False)
+    age = db.Column(db.Integer)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
-    schedules = db.relationship('Schedule', backref='teachers')
-    serialize_rules = ('-schedules.teachers',)
-    @validates('email','emergency_email')
-    def check_email(self,key,value):
+    orders = db.relationship("Order", backref = "customers")
+    serialize_rules = ('-orders.customers',)
+    @validates('email')
+    def check_something(self,key,value):
         if "@" in value:
             return value
         else:
-            raise Exception("Invalid email")
+            raise Exception("Not valid email")
 
-class Student(db.Model,SerializerMixin):
-    __tablename__ = "students"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String,nullable = False)
-    student_code = db.Column(db.Integer,nullable = False, unique = True)
-    gpa = db.Column(db.Float)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
-    schedules = db.relationship('Schedule', backref='students')
-    serialize_rules = ('-schedules.students',)
-
-    @validates('student_code')
-    def check_student_code(self,key,value):
-        print(type(value))
-        if 0 < int(value) < 1000000:
+    @validates('address','email')
+    def check_add(self,key,value):
+        if len(value) >= 3:
             return value
         else:
-            raise Exception("Invalid student id")
+            raise Exception("Not valid Address")
 
-
-class Schedule(db.Model,SerializerMixin):
-    __tablename__ = "schedules"
+class Product(db.Model,SerializerMixin):
+    __tablename__ = "products"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    subject = db.Column(db.String)
-    period = db.Column(db.Integer)
+    size = db.Column(db.Integer)
+    price = db.Column(db.Float)
+    weight = db.Column(db.Float)
+    category = db.Column(db.String)
+    description = db.Column(db.String)
+    # Backref changed to plural to work
+    orders = db.relationship("Order", backref = "products")
+    serialize_rules = ('-orders.products',)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
-    student_id = db.Column(db.Integer, db.ForeignKey('students.id'))
-    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))
-    serialize_rules = ('-students.schedules','-teachers.schedules')
+
+    @validates('category')
+    def check_something(self,key,value):
+        valid_categories = ["Knives","Forks"]
+        if value in valid_categories:
+            return value
+        else:
+            raise Exception("Not valid category")
+
+class Order(db.Model,SerializerMixin):
+    __tablename__ = "orders"
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'))
+    customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'))
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+    serialize_rules = ('-customers.orders','-products.orders')
 

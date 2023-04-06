@@ -8,7 +8,7 @@ from flask import Flask, request, make_response, jsonify
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from flask_cors import CORS
-from models import db,Student,Teacher,Schedule
+from models import db, Customer,Product,Order
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -19,82 +19,46 @@ migrate = Migrate(app, db)
 db.init_app(app)
 
 api = Api(app)
+# New addition to aid in cors errors
 CORS(app)
 
-class All_Student(Resource):
+# Option 1 for routes
+class All_Customers(Resource):
     def get(self):
-        all_students = Student.query.all()
-        all_return = []
-        for student in all_students:
-            all_return.append(student.to_dict())
-        res = make_response(jsonify(all_return),200)
+        print("restful")
+        all_cust = Customer.query.all()
+        all_customer = []
+        for cust in all_cust:
+            all_customer.append(cust.to_dict())
+        res = make_response(jsonify(all_customer),200)
         return res
 
     def post(self):
-        # new_student = Student(
-        #     name =request.form.get("name"),
-        #     student_code=request.form.get("student_code"),
-        #     gpa=request.form.get("gpa")
-        # )
         jsoned_request = request.get_json()
-        new_student = Student(
-            name = jsoned_request["name"],
-            student_code=jsoned_request["student_code"],
-            gpa=jsoned_request["gpa"]
+        print(jsoned_request)
+        new_customer = Customer(
+            name=jsoned_request['name'],
+            address = jsoned_request['address'],
+            email = jsoned_request['email'],
+            age = jsoned_request['age']
         )
-        db.session.add(new_student)
+        db.session.add(new_customer)
         db.session.commit()
-        all_students = Student.query.all()
-        ns = all_students[-1].to_dict()
-        res = make_response(jsonify(ns),201)
+        res = make_response(jsonify(new_customer.to_dict()),200)
+        return res
+api.add_resource(All_Customers, '/customers')
+
+# Option 2 for routes
+@app.route('/products', methods = ['GET','POST'])
+def get_products():
+    print("App route")
+    if request.method == 'GET':
+        all_prod = Product.query.all()
+        all_products = []
+        for prod in all_prod:
+            all_products.append(prod.to_dict())
+        res = make_response(jsonify(all_products),200)
         return res
 
-
-    def print_hello(self):
-        print("Hello")
-api.add_resource(All_Student, '/students')
-
-class One_Student(Resource):
-    def get(self,id):
-        one_student = Student.query.filter(Student.id == id).first()
-        res = make_response(jsonify(one_student.to_dict()),200)
-        return res
-    def patch(self,id):
-        one_student = Student.query.filter(Student.id == id).first()
-        for attr in request.form:
-            setattr(one_student, attr, request.form.get(attr))
-        db.session.add(one_student)
-        db.session.commit()
-        res = make_response(jsonify(one_student.to_dict()),200)
-        return res
-
-    def delete(self,id):
-        one_student = Student.query.filter(Student.id == id).first()
-        db.session.delete(one_student)
-        db.session.commit()
-        res = make_response(jsonify(one_student.to_dict()),200)
-        return res
-api.add_resource(One_Student, '/students/<int:id>')
-
-class All_Teacher(Resource):
-    def get(self):
-        all_students = Teacher.query.all()
-        all_return = []
-        for student in all_students:
-            all_return.append(student.to_dict())
-        res = make_response(jsonify(all_return),200)
-        return res
-api.add_resource(All_Teacher, '/teachers')
-
-class All_Schedule(Resource):
-    def get(self):
-        all_schedule = Schedule.query.all()
-        all_return = []
-        for schedule in all_schedule:
-            all_return.append(student.to_dict())
-        res = make_response(jsonify(all_return),200)
-        return res
-api.add_resource(All_Schedule, '/schedules')
-# We can now use api.add_resource(class, '<path>')!
-# But we need to create a class first and pass into it Resource
-# We can now create a get post patch and delete!
+if __name__ == '__main__':
+    app.run(port=5555)

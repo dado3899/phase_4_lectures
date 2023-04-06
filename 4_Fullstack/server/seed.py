@@ -1,45 +1,44 @@
 from app import app 
-from models import db, Teacher, Student, Schedule
+from models import db, Customer,Product,Order
 from faker import Faker
 from random import randint
 faker = Faker()
 with app.app_context():
-    print("Deleting Schedule")
-    Schedule.query.delete()
-    print("Deleting Teacher")
-    Teacher.query.delete()
-    print("Deleting Student")
-    Student.query.delete()
-    print("Seeding Students")
-    students = []
+    print("Deleting Customers")
+    Customer.query.delete()
+    print("Deleting Products")
+    Product.query.delete()
+    print("Deleting Orders")
+    Order.query.delete()
+    print("Seeding Customers")
+    customers = []
     for i in range(50):
-        sc = randint(1,999999)
-        new_student = Student(name=faker.name(), student_code=sc,gpa = 0)
-        students.append(new_student)
-    db.session.add_all(students)
+        new_cust = Customer(
+            name=faker.name(),
+            address = faker.address(),
+            email = faker.email(),
+            age = randint(1,100)
+            )
+        customers.append(new_cust)
+    db.session.add_all(customers)
 
-    print("Seeding Teachers")
-    teachers = []
+    print("Seeding Products")
+    products = []
     for i in range(50):
-        new_teacher = Teacher(name=faker.name(), email=faker.email(),emergency_email = faker.email())
-        teachers.append(new_teacher)
-    db.session.add_all(teachers)
+        new_product = Product(
+            name=faker.word(),
+            description = faker.paragraph()
+            )
+        products.append(new_product)
+    db.session.add_all(products)
 
-    print("Seeding Schedule")
-    schedules = []
-    all_subjects = ['Math','Science','English','Spanish','Music','Art','CS']
+    print("Seeding Orders")
+    orders = []
     for i in range(50):
-        for j in range(8):
-            class_name = faker.word()+' 101'
-            rand_int = randint(0,len(all_subjects)-1)
-            rand_teacher = randint(1,50)
-            new_schedule = Schedule(
-                name = class_name,
-                subject = all_subjects[rand_int], 
-                period = j+1,
-                student_id = i+1,
-                teacher_id = rand_teacher
-                )
-            schedules.append(new_schedule)
-    db.session.add_all(schedules)
+        new_order = Order(
+            product_id = randint(1,50),
+            customer_id = randint(1,50)
+            )
+        orders.append(new_order)
+    db.session.add_all(orders)
     db.session.commit()
