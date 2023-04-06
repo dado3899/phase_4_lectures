@@ -7,6 +7,7 @@
 from flask import Flask, request, make_response, jsonify
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
+from flask_cors import CORS
 from models import db,Student,Teacher,Schedule
 
 app = Flask(__name__)
@@ -17,15 +18,8 @@ app.json.compact = False
 migrate = Migrate(app, db)
 db.init_app(app)
 
-# Differences between Flask Rest and Flask Restful?
-# Restful setup
 api = Api(app)
-# @app.route('/vehicles/<id>', methods = ['GET','PATCH','DELETE'])
-# def some_method():
-#     if method == 'GET':
-#         pass
-#     elif method == 'PATCH':
-#         pass
+CORS(app)
 
 class All_Student(Resource):
     def get(self):
