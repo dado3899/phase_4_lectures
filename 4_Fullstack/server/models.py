@@ -14,24 +14,25 @@ metadata = MetaData(naming_convention={
 
 db = SQLAlchemy(metadata=metadata)
 
-class Teacher(db.Model,SerializerMixin):
-    __tablename__ = 'teachers'
+class Customer(db.Model,SerializerMixin):
+    __tablename__ = 'customers'
     id = db.Column(db.Integer, primary_key=True)
+    
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
     @validates('')
     def check_something(self,key,value):
         pass
 
-class Student(db.Model,SerializerMixin):
-    __tablename__ = "students"
+class Product(db.Model,SerializerMixin):
+    __tablename__ = "products"
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
 
-class Schedule(db.Model,SerializerMixin):
-    __tablename__ = "schedules"
+class Order(db.Model,SerializerMixin):
+    __tablename__ = "orders"
     id = db.Column(db.Integer, primary_key=True)
 
     created_at = db.Column(db.DateTime, server_default=db.func.now())
