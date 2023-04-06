@@ -23,6 +23,10 @@ api = Api(app)
 # New addition to aid in cors errors
 CORS(app)
 
+@app.route("/home")
+def home():
+    return ""
+
 class All_Student(Resource):
     def get(self):
         json_obj = { "Type" : "Get"}

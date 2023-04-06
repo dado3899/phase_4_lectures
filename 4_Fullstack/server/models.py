@@ -17,11 +17,12 @@ db = SQLAlchemy(metadata=metadata)
 class Teacher(db.Model,SerializerMixin):
     __tablename__ = 'teachers'
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
-    @validates('')
-    def check_something(self,key,value):
-        pass
+    # @validates('')
+    # def check_something(self,key,value):
+    #     pass
 
 class Student(db.Model,SerializerMixin):
     __tablename__ = "students"

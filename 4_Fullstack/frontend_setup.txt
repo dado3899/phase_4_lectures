@@ -10,3 +10,10 @@ also make sure we are running our client on a different port
   "start": "PORT=4000 react-scripts start"
 }
 Now make sure to do an npm start in the client folder
+
+useEffect(() => {
+    fetch("/students")
+        .then((r) => r.json())
+        .then((data) => console.log(data))
+  }
+  ,[])
