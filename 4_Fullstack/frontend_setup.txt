@@ -1,0 +1,12 @@
+First we create a client folder with:
+npx create-react-app client --use-npm
+
+Now normally we could fetch to
+http://127.0.0.1:5555/path
+but we can simpify this with adding this to package.json
+"proxy": "http://127.0.0.1:5555"
+also make sure we are running our client on a different port
+"scripts": {
+  "start": "PORT=4000 react-scripts start"
+}
+Now make sure to do an npm start in the client folder
