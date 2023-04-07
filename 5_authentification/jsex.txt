@@ -1,0 +1,41 @@
+const [user, setUser] = useState(null);
+  const [username, setUsername] = useState("");
+  function handleSubmit(e) {
+    e.preventDefault();
+  }
+  useEffect(()=>{
+    const data = {
+      name: "David Doan",
+      email: "david.doan@flatiron.com",
+      address: "1001 street street",
+      age: 50
+      }
+    // fetch("/customers",{
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(data),
+    // })
+    // .then(r => r.json())
+    // .then(data => console.log(data))  
+    fetch("/customers")
+    .then(r => r.json())
+    .then(data => console.log(data))  
+  },[])
+  
+
+  if (user) {
+    return <h2>Welcome, {user.name}!</h2>;
+  } else {
+    return (
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <button type="submit">Login</button>
+      </form>
+    )
+  }
