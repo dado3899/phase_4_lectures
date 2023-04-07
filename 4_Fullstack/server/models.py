@@ -32,12 +32,12 @@ class Customer(db.Model,SerializerMixin):
         else:
             raise Exception("Not valid email")
 
-    @validates('address','email')
-    def check_add(self,key,value):
-        if len(value) >= 3:
-            return value
-        else:
-            raise Exception("Not valid Address")
+    # @validates('address','email')
+    # def check_add(self,key,value):
+    #     if len(value) >= 3:
+    #         return value
+    #     else:
+    #         raise Exception("Not valid Address")
 
 class Product(db.Model,SerializerMixin):
     __tablename__ = "products"

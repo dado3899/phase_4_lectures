@@ -1,6 +1,10 @@
 First we create a client folder with:
+NOTE: create-react-app is no longer recommended by React
 npx create-react-app client --use-npm
 npx create-next-app client --use-npm
+
+Now we can
+npm run dev
 
 Now normally we could fetch to
 http://127.0.0.1:5555/path

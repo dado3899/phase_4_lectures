@@ -14,13 +14,16 @@ export default function Home() {
       address: "1001 street street",
       age: 50
       }
-    fetch("http://127.0.0.1:5555/customers",{
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
+    // fetch("/customers",{
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(data),
+    // })
+    // .then(r => r.json())
+    // .then(data => console.log(data))  
+    fetch("/customers")
     .then(r => r.json())
     .then(data => console.log(data))  
   },[])
