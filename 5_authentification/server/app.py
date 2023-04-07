@@ -27,7 +27,13 @@ CORS(app)
 
 # Storing user specific data
 # session['data'] will be different per cookie
+# session.get('data') to get the data 
 # How can use this for user login?
+
+# Lets create a login route that will check if the user exist and
+# Save it to session
+
+# Create a logout route now! set session to None
 
 # Use @app.before_request!
 
