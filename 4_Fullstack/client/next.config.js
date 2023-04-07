@@ -9,7 +9,7 @@ module.exports = () => {
       {
         source: "/:path*",
         destination: "http://localhost:5555/:path*",
-      },
+      }
     ];
   };
   return {

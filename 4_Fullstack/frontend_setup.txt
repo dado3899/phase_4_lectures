@@ -9,7 +9,7 @@ npm run dev
 Now normally we could fetch to
 http://127.0.0.1:5555/path
 but we can simpify this with adding this to package.json
-"proxy": "http://127.0.0.1:5555"
+"proxy": "http://127.0.0.1:5555" (IF NOT USING NEXT)
 also make sure we are running our client on a different port
 "scripts": {
   "start": "PORT=4000 react-scripts start"

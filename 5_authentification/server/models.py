@@ -17,7 +17,8 @@ db = SQLAlchemy(metadata=metadata)
 class User(db.Model,SerializerMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    user = db.Column(db.String, unique = True)
+    name = db.Column(db.String, unique = True)
+    user_type = db.Column(db.String)
     
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
