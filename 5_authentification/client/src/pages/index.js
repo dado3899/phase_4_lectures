@@ -41,6 +41,7 @@ export default function Home() {
       },
     })
   }
+  
   function checktype(e) {
     e.preventDefault();
     fetch("/get_type")

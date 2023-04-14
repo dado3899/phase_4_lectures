@@ -42,3 +42,20 @@ with app.app_context():
         orders.append(new_order)
     db.session.add_all(orders)
     db.session.commit()
+
+    new_cust_1 = Customer(
+            name=faker.name(),
+            address = faker.address(),
+            email = faker.email(),
+            age = randint(1,100)
+        )
+    new_product_1 = Product(
+            name=faker.word(),
+            description = faker.paragraph()
+            )
+    new_order = Order(
+            product_id = new_product_1,
+            customer_id = new_cust_1
+            )
+    db.session.add_all([new_cust_1,new_product_1,new_order])
+    db.session.commit()

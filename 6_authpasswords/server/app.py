@@ -9,12 +9,12 @@ from flask import Flask, request, make_response, jsonify, session
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from flask_cors import CORS
-from models import db, User
+from models import User
 
 # Yay more boiler plate!
 from flask_bcrypt import Bcrypt
-
-app = Flask(__name__)
+from services import app,bcrypt,db
+# app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
@@ -25,7 +25,7 @@ db.init_app(app)
 api = Api(app)
 CORS(app)
 # creating a bcrypt
-bcrypt = Bcrypt(app)
+# bcrypt = Bcrypt(app)
 
 # After setting up the bcrypt in our models we can go ahead and create a 
 # sign up route as well as edit our login route
@@ -38,12 +38,20 @@ bcrypt = Bcrypt(app)
 
 app.secret_key = b'\xcd\x9f.\xe9n\x18\x1c\x8f\xeby\xbf#\xaf\xa8z{'
 # python -c 'import os; print(os.urandom(16))'
+class CreateUser(Resource):
+    def post(self):
+        jsoned_request = request.get_json()
+        new_user = User(name = jsoned_request["name"],user_type = jsoned_request["user_type"])
+        new_user.password_hash = jsoned_request["password"]
+        db.session.add(new_user)
+        db.session.commit()
+api.add_resource(CreateUser, '/signup')
 
 class Login(Resource):
     def post(self):
         jsoned_request = request.get_json()
         user = User.query.filter(User.name == jsoned_request["name"]).first()
-        if user:
+        if user.authenticate(jsoned_request["password"]):
             session['user_id'] = user.id
             res = make_response(jsonify(user.to_dict()),200)
             return res
@@ -56,7 +64,6 @@ api.add_resource(Login, '/login')
 class check_login(Resource):
     def get(self):
         user_id = session.get('user_id')
-        
         if user_id:
             user = User.query.filter(User.id == session["user_id"]).first()
             res = make_response(jsonify(user.to_dict()),200)

@@ -13,3 +13,5 @@ with app.app_context():
     users = [new_user_1,new_user_2,new_user_3]
     db.session.add_all(users)
     db.session.commit()
+
+

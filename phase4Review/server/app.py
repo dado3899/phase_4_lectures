@@ -3,15 +3,22 @@
 # flask db init
 # flask db revision --autogenerate -m 'Create tables' 
 # flask db upgrade 
-
 # Standard imports/boilerplate setup (We added session)
 from flask import Flask, request, make_response, jsonify, session
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from flask_cors import CORS
-from models import db, User
+from models import User, Teacher,Student,Schedule
 
-app = Flask(__name__)
+from flask_bcrypt import Bcrypt
+from services import app,bcrypt,db
+# Imports for using .env
+import os
+from dotenv import load_dotenv
+# Load the env file
+load_dotenv()
+# Use os.environ.get() to get the data
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
@@ -24,28 +31,20 @@ CORS(app)
 
 app.secret_key = b'\xcd\x9f.\xe9n\x18\x1c\x8f\xeby\xbf#\xaf\xa8z{'
 # python -c 'import os; print(os.urandom(16))'
+class CreateUser(Resource):
+    def post(self):
+        jsoned_request = request.get_json()
+        new_user = User(name = jsoned_request["name"],user_type = jsoned_request["user_type"])
+        new_user.password_hash = jsoned_request["password"]
+        db.session.add(new_user)
+        db.session.commit()
+api.add_resource(CreateUser, '/signup')
 
-# Storing user specific data
-# session['data'] will be different per cookie
-# visit_count = 0
-# session['user_id']
-
-# class visited(Resource):
-#     def get(self):
-#         session['visit_count'] += 1
-#         json_obj = { "Type" : "Get"}
-#         res = make_response(jsonify(json_obj),200)
-#         return res
-# api.add_resource(visited, '/visited')
-# session.get('data') to get the data 
-# How can use this for user login?
-
-# Lets create a login route that will check if the user exist and
 class Login(Resource):
     def post(self):
         jsoned_request = request.get_json()
         user = User.query.filter(User.name == jsoned_request["name"]).first()
-        if user:
+        if user.authenticate(jsoned_request["password"]):
             session['user_id'] = user.id
             res = make_response(jsonify(user.to_dict()),200)
             return res
@@ -55,11 +54,9 @@ class Login(Resource):
 
         
 api.add_resource(Login, '/login')
-# Save it to session
 class check_login(Resource):
     def get(self):
         user_id = session.get('user_id')
-        
         if user_id:
             user = User.query.filter(User.id == session["user_id"]).first()
             res = make_response(jsonify(user.to_dict()),200)
@@ -71,7 +68,6 @@ class logout(Resource):
         session['user_id'] = None
         res = make_response(jsonify({ "login" : "Logged out"}),200)
         return res
-# Create a logout route now! set session to None
 api.add_resource(logout, '/logout')
 
 class get_type(Resource):
@@ -83,13 +79,22 @@ class get_type(Resource):
         else:
             res = make_response(jsonify({ "login" : "invalid user"}),400)
             return res
-# Create a logout route now! set session to None
 api.add_resource(get_type, '/get_type')
 
-# Use @app.before_request!
+class delete_teach(Resource):
+    def get(self,id):
+        teach = Teacher.query.filter(Teacher.id == id).first()
+        return make_response(teach.to_dict(),200)
+    def delete(self,id):
+        teach = Teacher.query.filter(Teacher.id == id).first()
+        db.session.delete(teach)
+        db.session.commit()
+        return make_response({},200)
+api.add_resource(delete_teach, '/teacher/<id>')
+
 @app.before_request
-def print_hello():
-    if session["user_id"]:
+def validate():
+    if session.get("user_id"):
         user = User.query.filter(User.id == session["user_id"]).first()
         if user.user_type == 'Zebra':
             session["valid"] = True

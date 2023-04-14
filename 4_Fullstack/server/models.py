@@ -25,6 +25,7 @@ class Customer(db.Model,SerializerMixin):
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
     orders = db.relationship("Order", backref = "customers")
     serialize_rules = ('-orders.customers',)
+    
     @validates('email')
     def check_something(self,key,value):
         if "@" in value:
