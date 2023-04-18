@@ -1,0 +1,9 @@
+
+
+<switch>
+    <route = "/test">
+        <Test/>
+
+<Route>
+    <route src = "/test">
+        <Test/>

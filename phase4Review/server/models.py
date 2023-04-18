@@ -39,7 +39,7 @@ class Teacher(db.Model,SerializerMixin):
     emergency_email = db.Column(db.String)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
-    schedules = db.relationship('Schedule',backref='teachers')
+    schedules = db.relationship('Schedule',cascade = "all,delete,delete-orphan",backref='teachers')
     serialize_rules = ('-schedules.teachers',)
     @validates('email','emergency_email')
     def check_email(self,key,value):
@@ -56,7 +56,7 @@ class Student(db.Model,SerializerMixin):
     gpa = db.Column(db.Float)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
-    schedules = db.relationship('Schedule', backref='students')
+    # schedules = db.relationship('Schedule', backref='students')
     serialize_rules = ('-schedules.students',)
 
     @validates('student_code')
@@ -78,5 +78,6 @@ class Schedule(db.Model,SerializerMixin):
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
     student_id = db.Column(db.Integer, db.ForeignKey('students.id'))
     teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))
+    students = db.relationship('Student', backref=backref('schedules', cascade = "all,delete,delete-orphan"))
     serialize_rules = ('-students.schedules','-teachers.schedules')
 

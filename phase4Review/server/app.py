@@ -10,7 +10,7 @@ from flask_restful import Api, Resource
 from flask_cors import CORS
 from models import User, Teacher,Student,Schedule
 
-from flask_bcrypt import Bcrypt
+# from flask_bcrypt import Bcrypt
 from services import app,bcrypt,db
 # Imports for using .env
 import os
@@ -29,8 +29,9 @@ db.init_app(app)
 api = Api(app)
 CORS(app)
 
-app.secret_key = b'\xcd\x9f.\xe9n\x18\x1c\x8f\xeby\xbf#\xaf\xa8z{'
+app.secret_key = os.environ.get("secretkey")
 # python -c 'import os; print(os.urandom(16))'
+
 class CreateUser(Resource):
     def post(self):
         jsoned_request = request.get_json()
@@ -51,8 +52,6 @@ class Login(Resource):
         else:
             res = make_response(jsonify({ "login" : "Invalid User"}),500)
             return res
-
-        
 api.add_resource(Login, '/login')
 class check_login(Resource):
     def get(self):
@@ -91,6 +90,17 @@ class delete_teach(Resource):
         db.session.commit()
         return make_response({},200)
 api.add_resource(delete_teach, '/teacher/<id>')
+
+class delete_student(Resource):
+    def get(self,id):
+        teach = Student.query.filter(Student.id == id).first()
+        return make_response(teach.to_dict(),200)
+    def delete(self,id):
+        teach = Student.query.filter(Student.id == id).first()
+        db.session.delete(teach)
+        db.session.commit()
+        return make_response({},200)
+api.add_resource(delete_student, '/student/<id>')
 
 @app.before_request
 def validate():

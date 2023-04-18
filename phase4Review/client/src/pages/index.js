@@ -3,6 +3,8 @@ import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import {useEffect,useState} from 'react'
+import Link from 'next/link'
+import { Router, useRouter } from 'next/router'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -10,6 +12,10 @@ export default function Home() {
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [display, setDisplay] = useState("Hello")
+  const [num, setNum] = useState(0)
+  const router = useRouter()
+
   useEffect(()=>{
     fetch('/checklogin')
     .then(r => r.json())
@@ -33,6 +39,21 @@ export default function Home() {
     .then(user=>setUser(user))
   }
   console.log(user)
+
+  const cityList = [
+    {
+      country: "USA",
+      city: "NewYork",
+    },
+    {
+      country: "Spain",
+      city: "Madrid",
+    },
+    {
+      country: "England",
+      city: "London",
+    },
+  ];
   
   function handleLogout(e) {
     e.preventDefault();
@@ -50,7 +71,11 @@ export default function Home() {
     .then(r => r.json())
     .then(data => console.log(data))
   }
+  function sendprops() {
+    router.push("/test")
+  }
 
+  const test = 'test'
   if (user) {
     return (
     <>
@@ -65,6 +90,22 @@ export default function Home() {
     );
   } else {
     return (
+      <>
+      <Link as = {`user/${test}`} href="/user/[something]">Link</Link>
+      <a onClick={()=>sendprops()}>click</a>
+      <ul>
+      {cityList.map((item, index) => (
+        <li key={index}>
+          <Link as={`/${item.country}/${item.city}`} href="/[country]/[city]">
+              {item.country}-{item.city}
+          </Link>
+        </li>
+      ))}
+      </ul>
+      <button type="button" onClick={() => router.push('/user/test')}>
+        Click me
+      </button>
+      <div>{display}</div>
       <form onSubmit={handleSubmit}>
         <p>Username</p>
         <input
@@ -80,6 +121,7 @@ export default function Home() {
         />
         <button type="submit">Login</button>
       </form>
+      </>
     )
   }
 }
