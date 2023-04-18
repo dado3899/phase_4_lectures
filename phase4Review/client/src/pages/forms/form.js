@@ -1,5 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-export default function form() {
+export default function form({stud}) {
+    console.log(stud)
     return(
     <div>
         <Formik 

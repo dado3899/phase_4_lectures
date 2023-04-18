@@ -10,11 +10,11 @@ export default function Home() {
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  useEffect(()=>{
-    fetch('/checklogin')
-    .then(r => r.json())
-    .then(user => setUser(user))
-  },[])
+  // useEffect(()=>{
+  //   fetch('/checklogin')
+  //   .then(r => r.json())
+  //   .then(user => setUser(user))
+  // },[])
   function handleSubmit(e) {
     e.preventDefault();
     const data = {

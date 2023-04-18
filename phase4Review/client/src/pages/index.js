@@ -8,19 +8,25 @@ import { Router, useRouter } from 'next/router'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
+export default function Home({currUser,loggedIn}) {
+  const router = useRouter()
+  // if(!loggedIn){
+  //   router.push('/login')
+  //   return <div>Not logged in</div>
+  // }
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [display, setDisplay] = useState("Hello")
   const [num, setNum] = useState(0)
-  const router = useRouter()
-
-  useEffect(()=>{
-    fetch('/checklogin')
-    .then(r => r.json())
-    .then(user => setUser(user))
-  },[])
+  
+  console.log(loggedIn)
+  
+  // useEffect(()=>{
+  //   fetch('/checklogin')
+  //   .then(r => r.json())
+  //   .then(user => setUser(user))
+  // },[])
   function handleSubmit(e) {
     e.preventDefault();
     const data = {

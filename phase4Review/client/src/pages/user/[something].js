@@ -2,9 +2,9 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 
-function User(props) {
+function User({stud,test}) {
   const router = useRouter()
-  console.log(props)
+  console.log(stud,test)
   const { something } = router.query
   return (<p>Pid: {something}</p>)
   }

@@ -51,16 +51,26 @@ class Login(Resource):
             return res
         else:
             res = make_response(jsonify({ "login" : "Invalid User"}),500)
-            return res
+            return res    
 api.add_resource(Login, '/login')
-class check_login(Resource):
+
+class get_logged_user(Resource):
     def get(self):
         user_id = session.get('user_id')
         if user_id:
             user = User.query.filter(User.id == session["user_id"]).first()
             res = make_response(jsonify(user.to_dict()),200)
             return res
-api.add_resource(check_login, '/checklogin')
+api.add_resource(get_logged_user, '/logged_user')
+
+class check_logged_in(Resource):
+    def get(self):
+        user_id = session.get('user_id')
+        if user_id:
+            if user_id != None:
+                return make_response({"logged_in": True},200)
+        return make_response({"logged_in": False},200)
+api.add_resource(check_logged_in,'/check')
 
 class logout(Resource):
     def delete(self):
@@ -102,16 +112,16 @@ class delete_student(Resource):
         return make_response({},200)
 api.add_resource(delete_student, '/student/<id>')
 
-@app.before_request
-def validate():
-    if session.get("user_id"):
-        user = User.query.filter(User.id == session["user_id"]).first()
-        if user.user_type == 'Zebra':
-            session["valid"] = True
-        else:
-            session["valid"] = False
-    else:
-        session["valid"] = False
+# @app.before_request
+# def validate():
+#     if session.get("user_id"):
+#         user = User.query.filter(User.id == session["user_id"]).first()
+#         if user.user_type == 'Zebra':
+#             session["valid"] = True
+#         else:
+#             session["valid"] = False
+#     else:
+#         session["valid"] = False
 
 if __name__ == '__main__':
     app.run(port=5555)

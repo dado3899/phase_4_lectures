@@ -90,7 +90,7 @@ api.add_resource(get_type, '/get_type')
 
 @app.before_request
 def validate():
-    if session["user_id"]:
+    if "user_id" in session:
         user = User.query.filter(User.id == session["user_id"]).first()
         if user.user_type == 'Zebra':
             session["valid"] = True
