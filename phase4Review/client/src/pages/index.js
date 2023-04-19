@@ -34,7 +34,7 @@ export default function Home({currUser,loggedIn}) {
       "password": password
     }
 
-    fetch("/login",{
+    fetch("/userlogin",{
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -43,23 +43,13 @@ export default function Home({currUser,loggedIn}) {
       })
     .then(r => r.json())
     .then(user=>setUser(user))
-  }
-  console.log(user)
+    .then(() => {
+      console.log("Pushing")
+      router.push('/home')
+    })
 
-  const cityList = [
-    {
-      country: "USA",
-      city: "NewYork",
-    },
-    {
-      country: "Spain",
-      city: "Madrid",
-    },
-    {
-      country: "England",
-      city: "London",
-    },
-  ];
+    
+  }
   
   function handleLogout(e) {
     e.preventDefault();
@@ -69,6 +59,7 @@ export default function Home({currUser,loggedIn}) {
         "Content-Type": "application/json",
       },
     })
+    router.push('/login')
   }
   
   function checktype(e) {
@@ -77,11 +68,6 @@ export default function Home({currUser,loggedIn}) {
     .then(r => r.json())
     .then(data => console.log(data))
   }
-  function sendprops() {
-    router.push("/test")
-  }
-
-  const test = 'test'
   if (currUser) {
     return (
     <>
@@ -95,24 +81,9 @@ export default function Home({currUser,loggedIn}) {
     </>
     );
   } else {
+    
     return (
       <>
-      <Link as = {`user/${test}`} href="/user/[something]">Link</Link>
-      
-      <a onClick={()=>sendprops()}>click</a>
-      <ul>
-      {cityList.map((item, index) => (
-        <li key={index}>
-          <Link as={`/${item.country}/${item.city}`} href="/[country]/[city]">
-              {item.country}-{item.city}
-          </Link>
-        </li>
-      ))}
-      </ul>
-      <button type="button" onClick={() => router.push('/user/test')}>
-        Click me
-      </button>
-      <div>{display}</div>
       <form onSubmit={handleSubmit}>
         <p>Username</p>
         <input

@@ -52,7 +52,7 @@ class Login(Resource):
         else:
             res = make_response(jsonify({ "login" : "Invalid User"}),500)
             return res    
-api.add_resource(Login, '/login')
+api.add_resource(Login, '/userlogin')
 
 class get_logged_user(Resource):
     def get(self):
@@ -65,6 +65,7 @@ api.add_resource(get_logged_user, '/logged_user')
 
 class check_logged_in(Resource):
     def get(self):
+        print(session)
         user_id = session.get('user_id')
         if user_id:
             if user_id != None:

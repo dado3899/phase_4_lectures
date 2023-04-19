@@ -1,9 +1,12 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import {useEffect,useState} from 'react'
-export default function login({currUser,loggedIn}) {
+import { Router, useRouter } from 'next/router'
+
+export default function login({currUser,loggedIn,setcurrUser,setloggedIn}) {
     const [user, setUser] = useState(null);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const router = useRouter()
     function handleSubmit(e) {
         e.preventDefault();
         const data = {
@@ -11,7 +14,7 @@ export default function login({currUser,loggedIn}) {
           "password": password
         }
     
-        fetch("/login",{
+        fetch("/userlogin",{
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -19,7 +22,11 @@ export default function login({currUser,loggedIn}) {
             body: JSON.stringify(data),
           })
         .then(r => r.json())
-        .then(user=>setUser(user))
+        .then(user=>{
+          setcurrUser(user)
+          setloggedIn(true)
+        })
+        .then(()=>router.push('/home'))
       }
 
     return(
