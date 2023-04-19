@@ -10,8 +10,8 @@ const inter = Inter({ subsets: ['latin'] })
 
 export default function Home({currUser,loggedIn}) {
   const router = useRouter()
-  // if(!loggedIn){
-  //   router.push('/login')
+  // if(!currUser){
+  //   router.push('/userlogin')
   //   return <div>Not logged in</div>
   // }
   const [user, setUser] = useState(null);
@@ -20,7 +20,7 @@ export default function Home({currUser,loggedIn}) {
   const [display, setDisplay] = useState("Hello")
   const [num, setNum] = useState(0)
   
-  console.log(loggedIn)
+  console.log(currUser,loggedIn)
   
   // useEffect(()=>{
   //   fetch('/checklogin')
@@ -82,10 +82,10 @@ export default function Home({currUser,loggedIn}) {
   }
 
   const test = 'test'
-  if (user) {
+  if (currUser) {
     return (
     <>
-    <h2>Welcome, {user.name}!</h2>
+    <h2>Welcome, {currUser.name}!</h2>
       <form onSubmit={handleLogout}>
         <button type="submit">Logout</button>
       </form>
@@ -98,6 +98,7 @@ export default function Home({currUser,loggedIn}) {
     return (
       <>
       <Link as = {`user/${test}`} href="/user/[something]">Link</Link>
+      
       <a onClick={()=>sendprops()}>click</a>
       <ul>
       {cityList.map((item, index) => (

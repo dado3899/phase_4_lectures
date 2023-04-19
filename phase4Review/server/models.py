@@ -78,6 +78,6 @@ class Schedule(db.Model,SerializerMixin):
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
     student_id = db.Column(db.Integer, db.ForeignKey('students.id'))
     teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))
-    students = db.relationship('Student', backref=backref('schedules', cascade = "all,delete,delete-orphan"))
+    students = db.relationship('Student', backref=backref('schedules'))
     serialize_rules = ('-students.schedules','-teachers.schedules')
 

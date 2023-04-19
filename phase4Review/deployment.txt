@@ -2,4 +2,4 @@ install gunicorn, honcho,python-dotenv
 Gunicorn: A way we can run our wsgi server
 gunicorn --chdir server app:app
 honcho: A way we can run both servers in oneline (which we then call in render)
-honcho start -f Procfile.dev 
+honcho start -f Procfile.dev
