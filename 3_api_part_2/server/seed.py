@@ -14,7 +14,7 @@ with app.app_context():
     students = []
     for i in range(50):
         sc = randint(1,999999)
-        new_student = Student(name=faker.name(), student_code=sc,gpa = 0)
+        new_student = Student(name=faker.name(),gpa = 0,student_code=sc)
         students.append(new_student)
     db.session.add_all(students)
 

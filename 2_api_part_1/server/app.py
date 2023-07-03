@@ -6,7 +6,7 @@
         # flask db revision --autogenerate -m 'Create tables' 
         # flask db upgrade 
         # python seed.py
-
+    
 # | HTTP Verb 	|       Path       	| Description        	|
 # |-----------	|:----------------:	|--------------------	|
 # | GET       	|   /model       	| READ all resources 	|

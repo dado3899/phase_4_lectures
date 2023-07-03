@@ -1,3 +1,5 @@
+const { TEMPORARY_REDIRECT_STATUS } = require('next/dist/shared/lib/constants');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -18,3 +20,4 @@ module.exports = () => {
 };
 
 // module.exports = nextConfig
+

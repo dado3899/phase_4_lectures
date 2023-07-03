@@ -68,9 +68,11 @@ export default function Home({currUser,loggedIn}) {
     .then(r => r.json())
     .then(data => console.log(data))
   }
+  const test = "Hello"
   if (currUser) {
     return (
     <>
+    <Link as = {`user/${test}`} href="/user/[something]">Link</Link>
     <h2>Welcome, {currUser.name}!</h2>
       <form onSubmit={handleLogout}>
         <button type="submit">Logout</button>
@@ -84,6 +86,7 @@ export default function Home({currUser,loggedIn}) {
     
     return (
       <>
+      <Link as = {`user/${test}`} href="/user/[something]">Link</Link>
       <form onSubmit={handleSubmit}>
         <p>Username</p>
         <input

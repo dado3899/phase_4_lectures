@@ -83,6 +83,8 @@ api.add_resource(logout, '/logout')
 class get_type(Resource):
     def get(self):
         if session.get("valid"):
+            game = Game.query.filter(Game.id == session["game_id"]).first()
+            playerA = Player.query.filter(Player.id==game.playerA).first
             user = User.query.filter(User.id == session["user_id"]).first() 
             res = make_response(jsonify({ "user_type" : user.user_type}),200)
             return res

@@ -57,9 +57,7 @@ class Login(Resource):
             return res
         else:
             res = make_response(jsonify({ "login" : "Invalid User"}),500)
-            return res
-
-        
+            return res    
 api.add_resource(Login, '/login')
 class check_login(Resource):
     def get(self):
