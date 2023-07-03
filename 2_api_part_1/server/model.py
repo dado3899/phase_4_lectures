@@ -7,7 +7,7 @@ from sqlalchemy import MetaData
 # serialize_rules = ('-tablename.value',)
 # This will prevent a loop!
 from sqlalchemy_serializer import SerializerMixin
-db = SQLAlchemy()
+# db = SQLAlchemy()
 
 # Reminder for foreign keys:
 # In sqlalchemy we could have
@@ -19,14 +19,32 @@ db = SQLAlchemy()
 # many1_id = Column(Integer, ForeignKey('many2_tablename.id'))
 # many2 = relationship('Join_class', backref='many1')
 
-class model():
-    __tablename__ = ''
+# Import SQLAlchemy from flask
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import MetaData
+
+# This will be our base, we can use our sqlalchemy method of making models using this!
+metadata = MetaData(naming_convention={
+        "ix": "ix_%(column_0_label)s",
+        "uq": "uq_%(table_name)s_%(column_0_name)s",
+        "ck": "ck_%(table_name)s_`%(constraint_name)s`",
+        "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+        "pk": "pk_%(table_name)s"
+      })
+db = SQLAlchemy(metadata=metadata)
+
+# Lets create a class, first lets Pseudocode out the class
+class Student(db.Model,SerializerMixin):
+    __tablename__ = 'students'
+    serialize_rules = ('-student_code',)
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    student_code = db.Column(db.Integer)
+    school = db.Column(db.String)
 
-    # Common additions to most tables to keep track of data! We don't need to add
-    # anything when we are creating our seeds
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
-
-    def __repr__(self):
-        return f'Nice print'
+class Schedule(db.Model,SerializerMixin):
+    __tablename__ = "schedules"
+    id = db.Column(db.Integer, primary_key=True)
+    class_name = db.Column(db.String)
+    student_id = db.Column(db.Integer, db.ForeignKey('students.id'))
+    
