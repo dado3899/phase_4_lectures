@@ -1,1 +1,1 @@
-# What was with the registered error?
+# Serialize only

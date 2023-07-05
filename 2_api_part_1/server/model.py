@@ -36,11 +36,13 @@ db = SQLAlchemy(metadata=metadata)
 # Lets create a class, first lets Pseudocode out the class
 class Student(db.Model,SerializerMixin):
     __tablename__ = 'students'
-    serialize_rules = ('-student_code',)
+    # serialize_only = ('id','name')
+    # serialize_rules = ('-student_code',)
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     student_code = db.Column(db.Integer)
     school = db.Column(db.String)
+    schedules = db.relationship('Schedule', backref = 'student')
 
 class Schedule(db.Model,SerializerMixin):
     __tablename__ = "schedules"

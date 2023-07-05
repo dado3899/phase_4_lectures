@@ -1,7 +1,7 @@
 #Imports
 from app import app 
 # db and Production from models
-from model import db, Student
+from model import db, Student, Schedule
 from faker import Faker
 
 # Create application context `with app.app_context():`
@@ -12,7 +12,9 @@ with app.app_context():
     faker = Faker()
     print(faker.name())
     Student.query.delete()
+    Schedule.query.delete()
     new_student = Student(name = "Ben", school = "Flatiron", student_code = 1)
+    schedule = Schedule(class_name = "Class 1", student_id = 1)
     new_student2 = Student(name = "Cody", school = "Harvard && MIT", student_code = 2)
     code_start = 2
     db.session.add_all([new_student,new_student2])
@@ -21,5 +23,6 @@ with app.app_context():
         new_student_faker = Student(name = faker.name(), school = "Flatiron", student_code = code_start)
         db.session.add(new_student_faker)
 # We can no use the imported db to .add() and .commit()!
+    db.session.add(schedule)
     db.session.commit()
     print(Student.query.all())

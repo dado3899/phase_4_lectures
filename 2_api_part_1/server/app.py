@@ -43,6 +43,10 @@ def displayStudents():
     method = request.method
     if method == "GET":
         students = Student.query.all()
+        if False:
+            Student.serialize_only = ('id','name','student_code','school','schedules.class_name')
+        else:
+            Student.serialize_only = ('id','name')
         all_students = []
         for student in students:
             all_students.append(student.to_dict())

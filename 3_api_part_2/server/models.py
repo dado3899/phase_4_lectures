@@ -1,5 +1,4 @@
 # There are many ways we can add constraints!
-# db.CheckConstraint
 # nullable = False
 # unique = True
 # @validates('')
@@ -25,30 +24,52 @@ db = SQLAlchemy(metadata=metadata)
 # many1_id = Column(Integer, ForeignKey('many2_tablename.id'))
 # many2 = relationship('Join_class', backref='many1')
 
-class Teacher(db.Model,SerializerMixin):
+class Student(db.Model, SerializerMixin):
+    __tablename__ = 'students'
+    serialize_rules =('-schedules.student',)
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String, nullable = False)
+    student_code = db.Column(db.Integer, unique = True)
+    email = db.Column(db.String)
+    emergency_email = db.Column(db.String)
+
+    @validates('email','emergency_email')
+    def checkEmail(self,key,value):
+        if '@' in value:
+            return value
+        else:
+            raise ValueError("Not valid email")
+
+    @validates('student_code')
+    def checkCode(self,key,value):
+        if len(str(value)) == 6:
+            return value
+        else:
+            raise ValueError("Not valid student code")
+
+class Teacher(db.Model, SerializerMixin):
     __tablename__ = 'teachers'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.string)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
-    
-
-
-class Student(db.Model,SerializerMixin):
-    __tablename__ = "students"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    gpa = db.Column(db.float)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
-
+    serialize_only = ('id','name')
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String, nullable = False)
+    specialty = db.Column(db.String)
+    email = db.Column(db.String)
+    @validates("specialty")
+    def validateSpecialty(self,key,value):
+        print("in Validates ",Student.query.all())
+        return value
 
 class Schedule(db.Model,SerializerMixin):
-    __tablename__ = "schedules"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    subject = db.Column(db.String)
-    period = db.Column(db.Integer)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+    __tablename__ = 'schedules'
 
+    serialize_rules = ('-student.schedules','-teacher.schedules')
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String)
+    period = db.Column(db.Integer)
+
+    student_id = db.Column(db.Integer,db.ForeignKey('students.id'))
+    teacher_id = db.Column(db.Integer,db.ForeignKey('teachers.id'))
+
+    student = db.relationship('Student', backref="schedules")
+    teacher = db.relationship('Teacher', backref="schedules")
+    
