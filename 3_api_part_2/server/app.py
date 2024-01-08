@@ -7,7 +7,7 @@
 from flask import Flask, request, make_response, jsonify
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
-from models import db,Student
+from models import db,Student, Schedule
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -55,8 +55,9 @@ class oneStudent(Resource):
     def patch(self,id):
         student = Student.query.filter(Student.id == id).first()
         values = request.get_json()
+        # student.schedules[0].name = "Comp Sci 999"
         for attr in values:
-            setattr(student,attr,values[attr])
+            setattr(student.schedules[0],attr,values[attr])
         db.session.add(student)
         db.session.commit()
         return make_response(student.to_dict(), 200)
@@ -66,7 +67,19 @@ class oneStudent(Resource):
         db.session.commit()
         return make_response({},200)
 
+class test(Resource):
+    def get(self):
+        all_students = Student.query.join(Schedule).filter(Schedule.period == 1).all()
+        students_dict = []
+        for student in all_students:
+            students_dict.append(student.to_dict())
+        return make_response(students_dict,200)
+
+api.add_resource(test, '/test')
 api.add_resource(allStudents,'/students')
 api.add_resource(oneStudent,'/students/<id>')
 # We can now use api.add_resource(class, '<path>')!
 # But we need to create a class first and pass into it Resource
+
+if __name__ == '__main__':
+    app.run(port=5555)

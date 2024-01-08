@@ -17,6 +17,7 @@ with app.app_context():
     new_student2 = Student(name="Cody",student_code = 100002, email = "cody@email.com", emergency_email = "EMERGENCY@")
     teacher = Teacher(name="David", email = "david@email.com", specialty = "Computer Science")
     schedule = Schedule(name = "Comp Sci 101", period = 1, student=new_student,teacher=teacher)
+    schedule = Schedule(name = "Comp Sci 101", period = 1, student=new_student2,teacher=teacher)
     db.session.add_all([new_student,new_student2,teacher,schedule])
     db.session.commit()
     teacher2 = Teacher(name="Stephen", email = "stephen@email.com", specialty = "Computer Science")
