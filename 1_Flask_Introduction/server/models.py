@@ -1,6 +1,6 @@
 # Import SQLAlchemy from flask and from sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import MetaData
+from sqlalchemy import MetaData, Column, Integer, String
 
 # This piece of code here is connected with the migrations:
 # See here for more about this piece of code 
@@ -16,6 +16,10 @@ metadata = MetaData(naming_convention={
 db = SQLAlchemy(metadata=metadata)
 
 # Lets create a class
-class NewClass(db.Model):
-    __tablename__ = ''
-    id = db.Column(db.Integer, primary_key=True)
+class Pet(db.Model):
+    __tablename__ = 'pets_table'
+    id = Column(Integer, primary_key=True)
+    name = db.Column(db.String, nullable = False)
+    species = Column(String)
+    age = Column(Integer)
+
