@@ -2,7 +2,9 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 
-# This piece of code here i
+# This piece of code here is connected with the migrations:
+# See here for more about this piece of code 
+# https://docs.sqlalchemy.org/en/20/core/constraints.html#configuring-constraint-naming-conventions
 metadata = MetaData(naming_convention={
         "ix": "ix_%(column_0_label)s",
         "uq": "uq_%(table_name)s_%(column_0_name)s",
