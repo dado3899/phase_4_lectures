@@ -1,1 +1,2 @@
-# What was with the registered error?
+# to_dict(rules=('-attribute',))
+# to_dict(only=('attribute',))

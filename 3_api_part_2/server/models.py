@@ -28,27 +28,45 @@ db = SQLAlchemy(metadata=metadata)
 class Teacher(db.Model,SerializerMixin):
     __tablename__ = 'teachers'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.string)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
-    
-
-
-class Student(db.Model,SerializerMixin):
-    __tablename__ = "students"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    gpa = db.Column(db.float)
+    name = db.Column(db.String, nullable = False,unique = True)
+    email = db.Column(db.String, nullable = False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
+    serialize_rules = ('-schedules.teacher','-created_at','-updated_at')
+
+    # students = db.relationship('Student',back_populates = "teacher")
+    schedules = db.relationship('Schedule',back_populates = "teacher")
+
+    @validates('email')
+    def validate_email(self,key,value):
+        if "@" in value:
+            return value
+        else:
+            raise ValueError("Not valid email")
 
 class Schedule(db.Model,SerializerMixin):
-    __tablename__ = "schedules"
+    __tablename__ = 'schedules'
+    id = db.Column(db.Integer, primary_key=True)
+    class_name = db.Column(db.String)
+    period = db.Column(db.Integer)
+    teacher_id = db.Column(db.Integer,db.ForeignKey('teachers.id'))
+    student_id = db.Column(db.Integer, db.ForeignKey('students.id'))
+
+    teacher = db.relationship('Teacher',back_populates = "schedules")
+    student = db.relationship('Student',back_populates = "schedules")
+
+    serialize_rules = ("-teacher.schedules","-student.schedules")
+
+    
+
+class Student(db.Model,SerializerMixin):
+    __tablename__ = 'students'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    subject = db.Column(db.String)
-    period = db.Column(db.Integer)
+    email = db.Column(db.String)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
-
+    # teacher = db.relationship('Teacher', back_populates = "students")
+    schedules = db.relationship('Schedule',back_populates = "student")
+    serialize_rules = ('-schedules.student',)
