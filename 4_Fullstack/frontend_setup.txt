@@ -2,6 +2,7 @@ First we create a client folder with:
 NOTE: create-react-app is no longer recommended by React
 npx create-react-app client --use-npm
 npx create-next-app client --use-npm
+npm create vite@latest client
 
 Now we can
 npm run dev
@@ -10,10 +11,31 @@ Now normally we could fetch to
 http://127.0.0.1:5555/path
 but we can simpify this with adding this to package.json
 "proxy": "http://127.0.0.1:5555"
-also make sure we are running our client on a different port
+NOTE: For vite the proxy will go in the vite config:
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    port: 3000,
+    cors:true,
+    proxy: {
+      "/api":{
+        target: "http://127.0.0.1:5555",
+        changeOrigin:true,
+        secure: false,
+        rewrite: (path)=>path.replace(/^\/api/,"")
+      }
+    }
+  }
+})
+
+also make sure we are running our client on a different port:
+CRA: 
 "scripts": {
   "start": "PORT=4000 react-scripts start"
 }
+Vite:
+See line above!
+
 Now make sure to do an npm start in the client folder
 
 Now we can go ahead and test 
