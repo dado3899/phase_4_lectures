@@ -52,10 +52,11 @@ api.add_resource(handle_session,"/session")
 # Use @app.before_request!
 class Logout(Resource):
     def delete(self):
-        # session['user'] = None
-        print(session)
-        session.pop('user', None)
-        print(session)
+        session['user'] = None
+        # print(session)
+        # Below also works!
+        # session.pop('user', None)
+        # print(session)
         return {}, 204
 api.add_resource(Logout,'/logout')
 
