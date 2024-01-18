@@ -90,7 +90,11 @@ def one_teacher_route(id):
 
 class One_Teacher(Resource):
     def get(self,id):
+        print(request.cookies)
+        # for cookie in request.cookies:
+        #     print(cookie)
         one_teach = Teacher.query.filter(Teacher.id == id).first()
+        
         return one_teach.to_dict(), 200
     def patch(self,id):
         one_teach = Teacher.query.filter(Teacher.id == id).first()

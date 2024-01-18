@@ -1,4 +1,4 @@
-# npx create-next-app client --use-npm
+# npm create vite@latest client
 
 # next.config.js for rerouting use rewrites
 # module.exports = () => {
