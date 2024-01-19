@@ -33,12 +33,12 @@ class User(db.Model,SerializerMixin):
 
     #next create a hybrid property
     @hybrid_property
-    def password_hash(self):
+    def password(self):
         return self._password_hash
     
         # Now we create a setter function!
-    @password_hash.setter
-    def password_hash(self, password):
+    @password.setter
+    def password(self, password):
         #NOTE WE NEED THE ENCODE AND DECODE IN PYTHON 3 DUE TO SPECIAL CHARACTERS ∫
         password_hash = bcrypt.generate_password_hash(password.encode('utf-8'))
         self._password_hash = password_hash.decode('utf-8')
