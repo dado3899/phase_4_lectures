@@ -1,6 +1,7 @@
 # Import SQLAlchemy from flask and from sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
+from sqlalchemy.orm import validates
 
 # This piece of code here is connected with the migrations:
 # See here for more about this piece of code 
@@ -16,6 +17,20 @@ metadata = MetaData(naming_convention={
 db = SQLAlchemy(metadata=metadata)
 
 # Lets create a class
-class NewClass(db.Model):
-    __tablename__ = ''
-    id = db.Column(db.Integer, primary_key=True)
+class Yoyo(db.Model):
+  __tablename__ = 'yoyos'
+
+  id = db.Column(db.Integer, primary_key=True)
+  rpm = db.Column(db.Integer)
+  company = db.Column(db.String, nullable = False)
+  size = db.Column(db.String)
+  era = db.Column(db.Integer, nullable = False)
+
+  @validates('era')
+  def validate_era(self,key,value):
+    print(value)
+    valid_decades = (1970,1980,1990,2000,2010,2020)
+    if value in valid_decades:
+      return value
+    else:
+      raise ValueError("Not valid decade")
