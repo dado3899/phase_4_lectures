@@ -9,6 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import validates
 from sqlalchemy import MetaData
 from sqlalchemy_serializer import SerializerMixin
+from sqlalchemy.orm import validates, relationship
 
 metadata = MetaData(naming_convention={
         "ix": "ix_%(column_0_label)s",
@@ -25,30 +26,40 @@ db = SQLAlchemy(metadata=metadata)
 # many1_id = Column(Integer, ForeignKey('many2_tablename.id'))
 # many2 = relationship('Join_class', backref='many1')
 
-class Teacher(db.Model,SerializerMixin):
-    __tablename__ = 'teachers'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.string)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
-    
-
-
-class Student(db.Model,SerializerMixin):
-    __tablename__ = "students"
-    id = db.Column(db.Integer, primary_key=True)
+class Country(db.Model,SerializerMixin):
+    __tablename__ = 'countries'
+    id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String)
-    gpa = db.Column(db.float)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+    capital = db.Column(db.String)
+    alliances = relationship("Alliance", secondary="treaties",back_populates="countries")
+    serialize_rules = ('-alliances.countries',)
+
+    @validates("name")
+    def validate_name(self, key, value):
+        if 2<=len(value):
+            return value
+        else:
+            raise ValueError("Not valid name")
+
+#To join the two
+class Treaty(db.Model,SerializerMixin):
+    __tablename__ = 'treaties'
+    id = db.Column(db.Integer, primary_key = True)
+    country_id = db.Column(db.Integer, db.ForeignKey("countries.id"))
+    alliance_id = db.Column(db.Integer, db.ForeignKey("alliances.id"))
+    # country = relationship("Country", back_populates="treaties")
+    # alliance = relationship("Alliance", back_populates="treaties")
 
 
-class Schedule(db.Model,SerializerMixin):
-    __tablename__ = "schedules"
-    id = db.Column(db.Integer, primary_key=True)
+class Alliance(db.Model,SerializerMixin):
+    __tablename__ = 'alliances'
+    id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String)
-    subject = db.Column(db.String)
-    period = db.Column(db.Integer)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+    date = db.Column(db.DateTime)
+    countries = relationship("Country", secondary="treaties", cascade='all,delete', back_populates="alliances")
+    serialize_rules = ('-countries.alliances',)
+
+
+
+
 
