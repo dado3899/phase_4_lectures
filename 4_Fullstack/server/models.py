@@ -1,6 +1,5 @@
-# imports
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import validates
+from sqlalchemy.orm import validates, relationship
 from sqlalchemy import MetaData
 from sqlalchemy_serializer import SerializerMixin
 
@@ -14,27 +13,34 @@ metadata = MetaData(naming_convention={
 
 db = SQLAlchemy(metadata=metadata)
 
-class Customer(db.Model,SerializerMixin):
-    __tablename__ = 'customers'
-    id = db.Column(db.Integer, primary_key=True)
-    
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
-    @validates('')
-    def check_something(self,key,value):
-        pass
+class Customer(db.Model, SerializerMixin):
+    __tablename__ = "customers"
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String, unique = True)
+    email = db.Column(db.String)
+    orders = relationship('Order', cascade="delete,all", back_populates="customer")
 
-class Product(db.Model,SerializerMixin):
-    __tablename__ = "products"
-    id = db.Column(db.Integer, primary_key=True)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+    serialize_rules = ("-orders.customer",)
 
-
-class Order(db.Model,SerializerMixin):
+class Order(db.Model, SerializerMixin):
     __tablename__ = "orders"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key = True)
+    customer_id = db.Column(db.Integer, db.ForeignKey("customers.id"))
+    product_id = db.Column(db.Integer, db.ForeignKey("products.id"))
+    price = db.Column(db.Float)
+    date = db.Column(db.DateTime)
 
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+    customer = relationship('Customer', back_populates="orders")
+    product = relationship("Product", back_populates="orders")
 
+    serialize_rules = ("-customer.orders", "-product.orders")
+
+
+class Product(db.Model, SerializerMixin):
+    __tablename__ = "products"
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String)
+    company = db.Column(db.String)
+
+    orders = relationship("Order", back_populates="product")
+    serialize_rules = ("-orders.product",)

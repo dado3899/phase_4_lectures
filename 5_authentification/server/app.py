@@ -36,6 +36,14 @@ app.secret_key = os.getenv('secret_key')
 # session['data'] will be different per cookie
 # session.get('data') to get the data 
 # How can use this for user login?
+@app.before_request
+def check_credentials():
+    valid_routes = ("/check_sessions","/login")
+    # If the route is not in valid routes but the user is logged in 
+    if request.path not in valid_routes and 'user_id' not in session:
+        return {"error": "please login"},401
+    else:
+        pass
 
 @app.route('/login', methods = ["POST"])
 def login():
@@ -54,7 +62,24 @@ def check_sessions():
         return user.to_dict()
     else:
         return {"error": "no user logged in"},401
+    
+@app.route('/logout', methods=["DELETE"])
+def logout():
+    session.pop('user_id')
+    return {}, 204
 
+@app.route('/blog/<int:id>')
+def get_blog(id):
+    if not session.get('reads'):
+        session['reads'] = 0
+    session['reads'] += 1
+    if session['reads'] <= 5:
+        return {
+            "id": id,
+            "data":"This is a blog"
+            }
+    else:
+        return {'error': 'pay me monies'},400
 
 # Lets create a login route that will check if the user exist and
 # Save it to session
@@ -62,6 +87,7 @@ def check_sessions():
 # Create a logout route now! set session to None
 
 # Use @app.before_request!
+
 
 class All_Customers(Resource):
     def get(self):

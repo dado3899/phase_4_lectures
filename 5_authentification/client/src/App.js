@@ -52,12 +52,29 @@ function App() {
     //   }
     // }})
   }
+
+  function logout(){
+    fetch('/logout',{
+      method: "DELETE"
+    })
+    .then(r=> setUser(undefined))
+  }
+  function fetchBlog(){
+    fetch('/blog/1')
+    .then(r=>r.json())
+    .then(data=> console.log(data))
+  }
+
   return (
     <div className="App">
       <header className="App-header">
         {
           user? 
-          <h1>{user.username}</h1>
+          <>
+            <h1>{user.username}</h1>
+            <button onClick={()=>logout()}>Logout</button>
+            <button onClick={()=> fetchBlog()}>Read Blog</button>
+          </>
           :
           <form onSubmit={(e)=>login(e)}>
             <input placeholder='username' value={loginUser} onChange={(e)=>setLoginUser(e.target.value)}/>
