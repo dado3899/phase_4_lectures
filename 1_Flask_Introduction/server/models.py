@@ -15,7 +15,7 @@ metadata = MetaData(naming_convention={
 # This will be our base, we can use our sqlalchemy method of making models using this!
 db = SQLAlchemy(metadata=metadata)
 
-# Lets create a class
+# Lets create a classs
 class Computer(db.Model):
     __tablename__ = 'computers'
     id = db.Column(db.Integer, primary_key=True)
