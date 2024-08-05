@@ -16,6 +16,12 @@ metadata = MetaData(naming_convention={
 db = SQLAlchemy(metadata=metadata)
 
 # Lets create a class
-class NewClass(db.Model):
-    __tablename__ = ''
+class Computer(db.Model):
+    __tablename__ = 'computers'
     id = db.Column(db.Integer, primary_key=True)
+    brand = db.Column(db.String)
+    memory = db.Column(db.String)
+    gpu = db.Column(db.String)
+    ram = db.Column(db.Integer)
+    laptop = db.Column(db.Boolean)
+    aesthetics = db.Column(db.Integer)
