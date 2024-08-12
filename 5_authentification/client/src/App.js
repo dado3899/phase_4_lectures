@@ -50,7 +50,20 @@ function App() {
     .then(r=>r.json())
     .then(data => setUser(undefined))
   }
-  
+
+  function handleNewUser(e) {
+    e.preventDefault();
+    fetch("/signup",{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({username:e.target.user.value,password:e.target.password.value}),
+      }
+    )
+    .then(r=>r.json())
+    .then(data=>setUser(data))
+  }
 
   if (user) {
     return (
@@ -78,6 +91,18 @@ function App() {
             />
           <button type="submit">Login</button>
           <input type='checkbox' name='stayLoggedIn' value={sLI} onChange={e=>setSLI(!sLI)}/>
+        </form>
+        <header>New User Form</header>
+        <form onSubmit={handleNewUser}>
+          <input
+            type="text"
+            name = "user"
+            />
+            <input
+            type="text"
+            name = 'password'
+            />
+          <button type="submit">Submit</button>
         </form>
       </header>
     </div>

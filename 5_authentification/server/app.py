@@ -5,13 +5,12 @@
 # flask db upgrade 
 
 # Standard imports/boilerplate setup (We added session)
-from flask import Flask, request, make_response, jsonify, session
-from flask_migrate import Migrate
-from flask_restful import Api, Resource
+from flask import request, session
+from flask_restful import Resource
 from flask_cors import CORS
-from models import User
+from models import User,db
 from flask_bcrypt import Bcrypt
-from services import api,db,app
+from services import api,app
 
 
 # Storing user specific data
@@ -52,6 +51,21 @@ class Logout(Resource):
         return {}
 api.add_resource(Logout,'/logout')
 
+class Signup(Resource):
+    def post(self):
+        try:
+            data = request.get_json()
+            user = User( username = data['username'], password_hash = data['password'])
+            print(user.username)
+            db.session.add(user)
+            db.session.commit()
+            session['user_id'] = user.id
+            return user.to_dict()
+        except Exception as e:
+            print(e)
+            return {"Error":"Can't signup"},400
+api.add_resource(Signup,'/signup')
+
 class CheckSession(Resource):
     def get(self):
         if session.get('user_id'):
@@ -62,17 +76,18 @@ class CheckSession(Resource):
 api.add_resource(CheckSession,'/checksessions')
 # Create a logout route now! set session to None
 
+
 # Use @app.before_request!
 @app.before_request
 def check_session():
-    valid_routes = ['/checksessions','/login']
+    valid_routes = ['/checksessions','/login','/signup']
     # print(request.path)
     if session.get('user_id') or request.path in valid_routes:
         pass
     else:
         return {
             "error":"not valid route"
-        }
+        },400
 
 class All_Items(Resource):
     def get(self):

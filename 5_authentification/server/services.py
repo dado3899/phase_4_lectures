@@ -31,5 +31,5 @@ api = Api(app)
 CORS(app)
 bcrypt = Bcrypt(app)
 
-app.secret_key =os.getenv('secret_key')
+app.secret_key = os.getenv('secret_key')
 # python -c 'import os; print(os.urandom(16))'
